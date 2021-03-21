@@ -1,9 +1,12 @@
 body {
   font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
 }
 
 .date-picker__container {
   margin: 10px 0px 30px 10px;
+  width: 250px;
 }
 
 .date-picker__label {
@@ -174,13 +177,13 @@ body {
 
 } */
 
-/* .no-display {
+.no-display {
   display: none;
-} */
+}
 
 .calendar__container {
   position: absolute;
-  top: 20px;
+  top: 70px;
   left: 10px;
   /* background-color: rgba(151, 197, 140, 0.8); */
   background-color: white;
@@ -197,6 +200,7 @@ body {
   display: flex;
   justify-content: space-between;
   text-align: center;
+  align-items: center;
   border-bottom: 1px solid gray;
   margin-bottom: 20px;
 }
@@ -219,15 +223,28 @@ body {
   text-align: center;
 }
 
+.day-header {
+  font-size: 0.85rem;
+}
+
 .days-of-the-month {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: auto;
-  row-gap: 15px;
+  /* row-gap: 15px; */
   text-align: center;
   margin-top: 10PX;
 }
 
+.day {
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.day:hover {
+  color: #ef5f19;
+  font-weight: 700;
+}
 .prev-day,
 .next-day {
   opacity: 0.4;

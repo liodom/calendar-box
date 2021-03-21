@@ -1,12 +1,24 @@
-const seed = new Date();
+let seed = new Date();
 
 const compute = (value) => {
   return value < 9 ? "0".concat(String(value)) : String(value);
 };
 
-const dd = compute(seed.getDate());
-const mm = compute(seed.getMonth() + 1);
-const yyyy = compute(seed.getFullYear());
+// let dd = compute(seed.getDate());
+// let mm = compute(seed.getMonth() + 1);
+// let yyyy = compute(seed.getFullYear());
+
+let dd;
+let mm;
+let yyyy;
+
+const initDatePicker = () => {
+  dd = compute(seed.getDate());
+  mm = compute(seed.getMonth() + 1);
+  yyyy = compute(seed.getFullYear());
+}
+
+initDatePicker();
 
 const render = () => `${dd}/${mm}/${yyyy}`;
 
@@ -14,7 +26,7 @@ const videochatBox = document.querySelector('.videochat-box');
 const videochatTitle = document.querySelector('.videochat-title');
 const videochatIcon = document.querySelector('.videochat-icon');
 
-videochatBox.addEventListener('click', () => boxStyleHandler('31', '27', '3127'));
+videochatBox.addEventListener('click', () => boxStyleHandler(dd, mm, yyyy));
 
 
 const boxStyleHandler = (day, month, year) => {
@@ -25,19 +37,9 @@ const boxStyleHandler = (day, month, year) => {
   const dayMonthConcat = day + month;
   // const newDayMonthConcat = +(dayMonthConcat);
 
-  // console.log('newDayMonthConcat => ', newDayMonthConcat);
-
   let ddIsPrime = true;
   let yyyyIsOdd = false;
   let alertMsg = '';
-
-  console.log('newDay => ', newDay);
-  console.log('newMonth => ', newMonth);
-  console.log('newYear => ', newYear);
-  console.log('videochatTitle => ', videochatTitle);
-  console.log('videochatIcon => ', videochatIcon);
-  console.log('dayMonthConcat  => ', dayMonthConcat);
-  console.log('yyyy => ', year);
 
   // e' dd un numero PRIMO ?
   for (let i = 1; i <= newDay; i++) {
@@ -62,11 +64,8 @@ const boxStyleHandler = (day, month, year) => {
     videochatTitle.classList.add('uppercase-title');
     alertMsg = alertMsg.concat(`\n${newDay} e' un Numero Primo`);
 
-    if (yyyyIsOdd) {
-      videochatBox.classList.add('change-border-color-rgb')
-      alertMsg = alertMsg.concat(` e ${yyyy} e' dispari`);
-    }
-  } else {
+    videochatBox.classList.add('change-border-color-rgb')
+} else {
     alertMsg = alertMsg.concat(`\n${newDay} NON e' un Numero Primo`);
   }
 
@@ -80,32 +79,26 @@ const boxStyleHandler = (day, month, year) => {
   if (dayMonthConcat === year) {
 
     videochatIcon.classList.add('rotate-icon-45');
-    console.log('ddmm , yyyy => ', dayMonthConcat, year);
     alertMsg = alertMsg + `\n${dayMonthConcat} e' UGUALE a ${newYear}`;
   }
 
   // (mm^2 + dd^3) e' un intero formato da un numero dispari di cifre
   const powerSum =  Math.pow(newMonth, 2) + Math.pow(newDay, 3);
   const powerSumStr = powerSum.toString();
-  console.log('powerSum => ', powerSum);
-  console.log('powerSumStr => ', powerSumStr);
+
   if (powerSumStr.length % 2 !== 0){
     videochatBox.classList.add('bg-lightblue');
     alertMsg = alertMsg + `\n${powerSum} e' un intero formato da un numero dispari di cifre`;
   }
 
   alert(alertMsg);
+
+  // print to console
+  console.log(render());
 }
-
-
 
 const datePicker = document.getElementById('date-picker');
 datePicker.textContent = render();
-
-console.log('videochatBox => ', videochatBox);
-
-
-
 
 const months = {
   JAN: 'JAN',
@@ -121,8 +114,6 @@ const months = {
   NOV: 'NOV',
   DEC: 'DEC'
 }
-
-
 
 const monthToString = (monthCode) => {
   switch(monthCode){
@@ -188,43 +179,31 @@ const monthToNumber = (monthString) => {
 
 
 const calendarWeekDays = document.querySelector('.days-of-the-week');
-console.log('calendarWeekDays => ', calendarWeekDays)
 
 const daysOfTheWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 for ( let day = 0; day < 7; day++) {
-  console.log(daysOfTheWeek[day]);
-  calendarWeekDays.insertAdjacentHTML("beforeend", `<div class='day' >${daysOfTheWeek[day]}</div>`);
+  calendarWeekDays.insertAdjacentHTML("beforeend", `<div class='day-header' >${daysOfTheWeek[day]}</div>`);
 }
 
 let activeMonth = monthToString(new Date().getUTCMonth());
 let previousMonth = monthToString(new Date().getUTCMonth() - 1);
 let nextMonth = monthToString(new Date().getUTCMonth() + 1);
-console.log('activeMonth => ', activeMonth);
-console.log('previousMonth => ', previousMonth);
-console.log('nextMonth => ', nextMonth);
 
 let activeYear = new Date().getFullYear();
 let previousYear = new Date().getFullYear() - 1;
 let nextYear = new Date().getFullYear() + 1;
-console.log('previousYear => ', previousYear);
-console.log('activeYear => ', activeYear);
-console.log('nextYear => ', nextYear);
 
 const nextButtonHandler = () => {
    if (activeMonth === months.DEC) {
     activeMonth = months.JAN;
     activeYear++;
-    console.log('nextButtonHandler => activeMonth => ', activeMonth)
-    console.log('nextButtonHandler => activeYear => ', activeYear)
     getMonthDays(activeMonth, activeYear);
     renderCalendar();
     return;
   }
   
   activeMonth = monthToString(monthToNumber(activeMonth) + 1);
-  console.log('nextButtonHandler => activeMonth => ', activeMonth)
-  console.log('nextButtonHandler => activeYear => ', activeYear)
   getMonthDays(activeMonth, activeYear);
   renderCalendar();
 }
@@ -233,44 +212,23 @@ const previousButtonHandler = () => {
   if (activeMonth === months.JAN) {
     activeMonth = months.DEC;
     activeYear--;
-    console.log('previousButtonHandler => activeMonth => ', activeMonth)
-    console.log('previousButtonHandler => activeYear => ', activeYear)
     getMonthDays(activeMonth, activeYear);
     renderCalendar();
     return;
   }
   activeMonth = monthToString(monthToNumber(activeMonth) - 1);
-  console.log('previousButtonHandler => activeMonth => ', activeMonth)
-  console.log('previousButtonHandler => activeYear => ', activeYear)
   getMonthDays(activeMonth, activeYear);
   renderCalendar();
 }
 
 
-// const activeMonthTitle = document.querySelector('.month-year');
-// const activeYearTitle = document.querySelector('.month-year');
-// console.log('activeMonthTitle => ', activeMonthTitle);
-// console.log('activeYearTitle => ', activeYearTitle);
-// activeMonthTitle.insertAdjacentHTML("beforeend", `<h1>${activeMonth}</h1>`)
-// activeMonthTitle.insertAdjacentHTML("beforeend", `<p>${activeYear}</p>`)
-
-
 const getMonthDays = ( activeMonth, activeYear) => {
-  console.log('activeMonth => ', activeMonth);
-  console.log('activeMonth Number => ', monthToNumber(activeMonth));
-  console.log('activeYear => ', activeYear)
-  console.log('activeYear => ', activeYear)
-  console.log('activeYearNEW => ', new Date().getFullYear())
   let monthDays = [];
-  // let firstDayRaw = (new Date(`${monthToNumber(activeMonth)} 1, ${activeYear}`).getDay());   // 0 is SUNDAY and 1 is MONDAY
   let firstDayRaw = (new Date(activeYear, monthToNumber(activeMonth), 1).getDay());   // 0 is SUNDAY and 1 is MONDAY
   let firstDayIndex = firstDayRaw === 0 ? 6 : firstDayRaw - 1;                               // conversion => now 6 is SUNDAY and 0 is MONDAY
 
   let daysInTheMonth = numberOfDays(monthToNumber(activeMonth), activeYear);
 
-  console.log('daysInTheMonth => ', daysInTheMonth);
-  console.log('firstDayRaw => ', firstDayRaw);
-  console.log('firstDayIndex => ', firstDayIndex);
 
   let dayCounter = 1;
 
@@ -289,7 +247,6 @@ const getMonthDays = ( activeMonth, activeYear) => {
     }
   }
 
-  console.log('monthDays => ', monthDays)
 
   let sliceTestCounter = 0;
 
@@ -344,7 +301,7 @@ const renderCalendar = () => {
   const header = document.querySelector('.header__container');
   const headerContent = document.createElement('div');
   headerContent.setAttribute('class', 'month-year');
-  console.log('headerContent')
+  // console.log('headerContent')
   header.appendChild(headerContent);
 
   const headerElements = document.querySelector('.month-year');
@@ -355,18 +312,48 @@ const renderCalendar = () => {
 renderCalendar();
 
 
-getMonthDays(activeMonth, activeYear);
-
-
-// // --------- PROVA ----------
-// const test = getMonthDays(activeMonth, 2021);
-
-
-
-
 // BUTTONS EVENT LISTENERS
 const nextButton = document.querySelector('.btn-right');
 const previousButton = document.querySelector('.btn-left');
 
 nextButton.addEventListener('click', nextButtonHandler);
 previousButton.addEventListener('click', previousButtonHandler);
+
+const calendarSection = document.querySelector('.calendar__section');
+
+const handlePicker = () => {
+  resetVideochatBoxStyle();
+  calendarSection.classList.toggle('no-display');
+}
+
+datePicker.addEventListener('click', handlePicker);
+
+const resetVideochatBoxStyle = () => {
+  videochatBox.classList.remove('change-border-color-182d4a');
+  videochatBox.classList.remove('bg-lightblue');
+  videochatTitle.classList.remove('uppercase-title');
+  videochatBox.classList.remove('change-border-color-rgb')
+  videochatIcon.classList.remove('rotate-icon-135');
+  videochatIcon.classList.remove('rotate-icon-45');
+}
+
+const bodyArea = document.querySelector('body');
+
+const bodyDOMHandler = (e) => {
+
+  let dayValue = Number(e.target.textContent);
+
+  if(Number.isInteger(dayValue) && dayValue !== 0) {
+    dd = compute(dayValue);
+    mm = compute(monthToNumber(activeMonth) + 1);
+    yyyy = compute(activeYear);
+
+    datePicker.textContent = render();
+
+    resetVideochatBoxStyle();
+  }
+
+}
+
+bodyArea.addEventListener('click', bodyDOMHandler);
+
