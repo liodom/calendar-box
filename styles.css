@@ -200,8 +200,17 @@ body {
   border-bottom: 1px solid gray;
   margin-bottom: 20px;
 }
+.btn {
+  width: 17px;
+  height: 50px;
+  padding: 0 10px;
+}
 .btn:hover {
   cursor: pointer;
+}
+
+.month-year {
+  width: 100px;
 }
 
 .days-of-the-week {
@@ -213,7 +222,7 @@ body {
 .days-of-the-month {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: auto;
   row-gap: 15px;
   text-align: center;
   margin-top: 10PX;

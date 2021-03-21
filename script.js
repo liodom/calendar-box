@@ -198,45 +198,170 @@ for ( let day = 0; day < 7; day++) {
 }
 
 let activeMonth = monthToString(new Date().getUTCMonth());
+let previousMonth = monthToString(new Date().getUTCMonth() - 1);
+let nextMonth = monthToString(new Date().getUTCMonth() + 1);
 console.log('activeMonth => ', activeMonth);
+console.log('previousMonth => ', previousMonth);
+console.log('nextMonth => ', nextMonth);
 
 let activeYear = new Date().getFullYear();
+let previousYear = new Date().getFullYear() - 1;
+let nextYear = new Date().getFullYear() + 1;
+console.log('previousYear => ', previousYear);
 console.log('activeYear => ', activeYear);
+console.log('nextYear => ', nextYear);
 
 const nextButtonHandler = () => {
    if (activeMonth === months.DEC) {
     activeMonth = months.JAN;
-    activeMonthTitle.textContent = activeMonth;
+    activeYear++;
     console.log('nextButtonHandler => activeMonth => ', activeMonth)
+    console.log('nextButtonHandler => activeYear => ', activeYear)
+    getMonthDays(activeMonth, activeYear);
+    renderCalendar();
     return;
   }
-
+  
   activeMonth = monthToString(monthToNumber(activeMonth) + 1);
-  activeMonthTitle.innerHTML = activeMonth;
   console.log('nextButtonHandler => activeMonth => ', activeMonth)
+  console.log('nextButtonHandler => activeYear => ', activeYear)
+  getMonthDays(activeMonth, activeYear);
+  renderCalendar();
 }
 
 const previousButtonHandler = () => {
   if (activeMonth === months.JAN) {
     activeMonth = months.DEC;
-    activeMonthTitle.textContent = activeMonth;
+    activeYear--;
     console.log('previousButtonHandler => activeMonth => ', activeMonth)
+    console.log('previousButtonHandler => activeYear => ', activeYear)
+    getMonthDays(activeMonth, activeYear);
+    renderCalendar();
     return;
   }
   activeMonth = monthToString(monthToNumber(activeMonth) - 1);
-  activeMonthTitle.textContent = activeMonth;
   console.log('previousButtonHandler => activeMonth => ', activeMonth)
+  console.log('previousButtonHandler => activeYear => ', activeYear)
+  getMonthDays(activeMonth, activeYear);
+  renderCalendar();
 }
 
-// const myDate = new Date(1984, 3, 1)
-// console.log('myDate => ', myDate);
 
-const activeMonthTitle = document.querySelector('.month-year');
-const activeYearTitle = document.querySelector('.month-year');
-console.log('activeMonthTitle => ', activeMonthTitle);
-console.log('activeYearTitle => ', activeYearTitle);
-activeMonthTitle.insertAdjacentHTML("beforeend", `<h1>${activeMonth}</h1>`)
-activeMonthTitle.insertAdjacentHTML("beforeend", `<p>${activeYear}</p>`)
+// const activeMonthTitle = document.querySelector('.month-year');
+// const activeYearTitle = document.querySelector('.month-year');
+// console.log('activeMonthTitle => ', activeMonthTitle);
+// console.log('activeYearTitle => ', activeYearTitle);
+// activeMonthTitle.insertAdjacentHTML("beforeend", `<h1>${activeMonth}</h1>`)
+// activeMonthTitle.insertAdjacentHTML("beforeend", `<p>${activeYear}</p>`)
+
+
+const getMonthDays = ( activeMonth, activeYear) => {
+  console.log('activeMonth => ', activeMonth);
+  console.log('activeMonth Number => ', monthToNumber(activeMonth));
+  console.log('activeYear => ', activeYear)
+  console.log('activeYear => ', activeYear)
+  console.log('activeYearNEW => ', new Date().getFullYear())
+  let monthDays = [];
+  // let firstDayRaw = (new Date(`${monthToNumber(activeMonth)} 1, ${activeYear}`).getDay());   // 0 is SUNDAY and 1 is MONDAY
+  let firstDayRaw = (new Date(activeYear, monthToNumber(activeMonth), 1).getDay());   // 0 is SUNDAY and 1 is MONDAY
+  let firstDayIndex = firstDayRaw === 0 ? 6 : firstDayRaw - 1;                               // conversion => now 6 is SUNDAY and 0 is MONDAY
+
+  let daysInTheMonth = numberOfDays(monthToNumber(activeMonth), activeYear);
+
+  console.log('daysInTheMonth => ', daysInTheMonth);
+  console.log('firstDayRaw => ', firstDayRaw);
+  console.log('firstDayIndex => ', firstDayIndex);
+
+  let dayCounter = 1;
+
+  for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < firstDayIndex) {
+        monthDays.push('');
+        continue;
+      }
+      if((i === 4 || i === 5) && dayCounter > daysInTheMonth) {
+        monthDays.push('');
+        continue;
+      }
+      monthDays.push(dayCounter);
+      dayCounter++;
+    }
+  }
+
+  console.log('monthDays => ', monthDays)
+
+  let sliceTestCounter = 0;
+
+  for (let i = monthDays.length - 1; i > 0; i--){
+    if(monthDays[i] !== ''){
+      break;
+    }
+    sliceTestCounter++
+  }
+  
+  let finalArray;
+  if(sliceTestCounter >= 7){
+    finalArray = monthDays.slice(0, monthDays.length - 7);
+  } else {
+    finalArray = monthDays;
+  }
+
+  console.log('finalArray => ', finalArray);
+
+  return finalArray;
+}
+
+const numberOfDays = (month, year) => {
+  const testDay = 35;
+  let temp = new Date(year, month, testDay).getDate();
+  return testDay - temp;
+}
+
+const renderCalendar = () => {
+  // remove node from the DOM
+  const daysContainer = document.querySelector('.days-of-the-month');
+  daysContainer.parentNode.removeChild(daysContainer);
+
+  // create a new node and append it to the DOM
+  const calendar = document.querySelector('.calendar');
+  const daysOfCalendar = document.createElement('div');
+  daysOfCalendar.setAttribute('class', 'days-of-the-month')
+  calendar.appendChild(daysOfCalendar);
+
+  const calendarWeekDays = document.querySelector('.days-of-the-month');
+  const calendarDays = getMonthDays(activeMonth, activeYear);
+
+  for ( let i = 0; i < calendarDays.length; i++) {
+    calendarWeekDays.insertAdjacentHTML("beforeend", `<div class='day' >${calendarDays[i]}</div>`);
+  }
+
+  // remove node from the DOM
+  const calendarHeader = document.querySelector('.month-year');
+  calendarHeader.parentNode.removeChild(calendarHeader);
+
+  // create a new Node and append it to the DOM
+  const header = document.querySelector('.header__container');
+  const headerContent = document.createElement('div');
+  headerContent.setAttribute('class', 'month-year');
+  console.log('headerContent')
+  header.appendChild(headerContent);
+
+  const headerElements = document.querySelector('.month-year');
+  headerElements.insertAdjacentHTML('beforeend', `<h1>${activeMonth}</h1>`);
+  headerElements.insertAdjacentHTML('beforeend', `<p>${activeYear}</p>`);
+}
+
+renderCalendar();
+
+
+getMonthDays(activeMonth, activeYear);
+
+
+// // --------- PROVA ----------
+// const test = getMonthDays(activeMonth, 2021);
+
+
 
 
 // BUTTONS EVENT LISTENERS
