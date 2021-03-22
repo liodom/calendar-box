@@ -319,16 +319,16 @@ videochatIcon.classList.remove('rotate-icon-45');
 const bodyArea = document.querySelector('body');
 
 const clickDateHandler = (e) => {
-   let dayValue = Number(e.target.textContent);
+  let dayValue = Number(e.target.textContent);
 
-   if(Number.isInteger(dayValue) && dayValue !== 0 && dayValue > 0 && dayValue < 32) {
+  if(Number.isInteger(dayValue) && dayValue !== 0 && dayValue > 0 && dayValue < 32) {
       dd = compute(dayValue);
       mm = compute(monthToNumber(activeMonth) + 1);
       yyyy = compute(activeYear);
 
       datePicker.textContent = render();
       resetVideochatBoxStyle();
-   }
+  }
 }
 
 bodyArea.addEventListener('click', clickDateHandler);
